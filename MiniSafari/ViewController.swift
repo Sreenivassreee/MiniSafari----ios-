@@ -10,19 +10,37 @@ import WebKit
 
 class ViewController: UIViewController,WKNavigationDelegate {
     var web = WKWebView()
-    override func loadView() {
+  
+    var progressView: UIProgressView!
     
+    override func loadView() {
+        web = WKWebView()
         web.navigationDelegate = self
         view = web
-        
-        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+      web.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+        
         let url = URL(string: "https://www.hackingwithswift.com")!
         web.load(URLRequest(url: url))!
         web.allowsBackForwardNavigationGestures = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "OPen", style: .plain, target: self, action: #selector(openTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
+        
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: web, action: #selector(web.reload))
+        
+        
+        navigationController?.isToolbarHidden = false
+        
+        
+        progressView = UIProgressView(progressViewStyle: .default)
+        progressView.sizeToFit()
+        var progressBtn = UIBarButtonItem(customView: progressView)
+        
+        toolbarItems = [progressBtn, spacer,refresh]
+        
+    
     }
     
     @objc func openTapped(){
@@ -34,14 +52,26 @@ class ViewController: UIViewController,WKNavigationDelegate {
         
     }
     func openPage(action:UIAlertAction){
-        print(action.title)
+        
         if let w = action.title{
             var url = URL(string: "https://"+w)!
             web.load(URLRequest(url: url))
+  
         }
+        
+    }
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        title = web.title
     }
     
-    
-
+    override class func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "estimatedProgress"{
+            print(keyPath!)
+          
+//            progressView.progress = Float(web.estimatedProgress)
+//            progressView.progress = Float(web.estimatedProgress)
+        }
+    }
+   
 }
 
