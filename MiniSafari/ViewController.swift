@@ -20,9 +20,9 @@ class ViewController: UIViewController,WKNavigationDelegate {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-      web.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+//      web.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         
-        let url = URL(string: "https://www.hackingwithswift.com")!
+        let url = URL(string: "https://www.apple.com")!
         web.load(URLRequest(url: url))!
         web.allowsBackForwardNavigationGestures = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
@@ -54,7 +54,7 @@ class ViewController: UIViewController,WKNavigationDelegate {
     func openPage(action:UIAlertAction){
         
         if let w = action.title{
-            var url = URL(string: "https://"+w)!
+            var url = URL(string: "https://www."+w)!
             web.load(URLRequest(url: url))
   
         }
